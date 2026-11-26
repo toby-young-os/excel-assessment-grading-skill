@@ -9,7 +9,7 @@ A Claude skill that grades a candidate's completed Opensignal Excel exercise (Pa
 | Path | What it holds |
 |---|---|
 | `excel-assessment-grading/` | The skill itself: `SKILL.md`, `references/`, `scripts/`. Only this folder ships to reviewers |
-| `resources/` | Source material the skill is built from (the 2021 answer key) |
+| `resources/` | Source material the skill is built from: the 2021 answer key (git-ignored) and `old-skill/`, an unmodified copy of the original `excel-assessment-grading` skill (by Jeremy White) for reference during the rebuild |
 | `templates/` | The candidate exercise template, dated; older versions go in `templates/archive/` |
 | `tests/inputs/` | Anonymised submissions (`submissions/`, git-ignored) and reviewer verdicts |
 | `tests/outputs/` | Skill reports per submission, for comparing with reviewer verdicts |
