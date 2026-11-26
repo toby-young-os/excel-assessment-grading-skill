@@ -1,0 +1,54 @@
+# ------------------------------------------------------------------
+# Candidate data: never commit (repo is pushed to a shared remote)
+# ------------------------------------------------------------------
+
+# Anonymised submissions: still candidates' work, kept local only
+tests/inputs/submissions/*
+!tests/inputs/submissions/.gitkeep
+
+# ID-to-name mapping and anything that re-identifies a candidate
+*mapping*
+*.mapping.*
+*-pii*
+*_pii*
+pii/
+
+# Original (un-anonymised) downloads, whatever their name
+originals/
+*.original.xlsx
+
+# Raw scoring-form exports (contain candidate names and emails)
+*form-responses*.xlsx
+*form-responses*.csv
+*Form Responses*
+
+# Anonymiser per-file reports sit next to the submissions
+tests/inputs/submissions/*.report.json
+
+# ------------------------------------------------------------------
+# Confidential Opensignal material ("DO NOT DISTRIBUTE")
+# Kept locally only; the shipped skill doesn't need them. See README for sources.
+# ------------------------------------------------------------------
+templates/*.xlsx
+templates/archive/*.xlsx
+resources/answer-key-*.xlsx
+
+# ------------------------------------------------------------------
+# Working files
+# ------------------------------------------------------------------
+scratch.md
+*.tmp
+~$*
+.~lock.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
