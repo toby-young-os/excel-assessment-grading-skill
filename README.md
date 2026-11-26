@@ -2,6 +2,8 @@
 
 A Claude skill that grades a candidate's completed Opensignal Excel exercise (Part A, Q1–Q6). It traces where mistakes started and acts as a first-pass grader that scores and recommends. The reviewer makes the final decision.
 
+**Start here:** `PLAN.md` has the checklist of what's done and what's next, the working rules, and a prompt to resume in a new AI session.
+
 **Status:** rebuild in progress. The materials are gathered and the test set is being built; `SKILL.md` hasn't been written yet. See `notes/` for the current state.
 
 ## Layout
