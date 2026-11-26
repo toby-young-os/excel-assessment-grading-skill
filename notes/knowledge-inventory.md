@@ -43,6 +43,7 @@ Working file. Lists everything the rebuild needs, where it is, and who owns it. 
 | K17 | Reviewer training material (Allyson's demo, Aug 2026) | Missing | Training is done by pairing; no written guide found | Allyson | G3 | No |
 | K19 | Template defects list | Have | `template-defects.md` (9 defects; to report to Joni) | Toby | G1, G7 | No |
 | K20 | Form response statistics, sampling plan, anonymisation procedure and trial results | Have | `test-set-plan.md` | Toby | G3, G5, G9 | No |
+| K22 | Test set (19 submissions) and verdicts | **Have** | `tests/inputs/verdicts.csv` (reviewers coded, pronouns replaced); anonymised files in `tests/inputs/submissions/` (git-ignored); built 26 Nov, all 19 PASS. The one "low score but Yes" case was removed as an outlier (score-entry error) (`test-set-plan.md` §2a). AI-use cases (K11) and Jeremy's three (K10) to be added after consulting Jeremy and Joni | Toby | G3, G9 | Submissions: anonymised |
 | K21 | Survey and anonymisation scripts | Have | `tests/scripts/survey_xlsx.py`, `tests/scripts/anonymise_xlsx.py` (tested on 6 submissions, all PASS) | Toby | G9 | No |
 | K18 | Gina's request sheet (AI Training Workshop Requests) | Linked | [Google Sheet](https://docs.google.com/spreadsheets/d/1dh7KH5LvTy7oXUUmx0VFAPd24eeI6nwLpR_0X247RbM/edit?gid=458942398#gid=458942398) | Gina | Scope (low priority) | No |
 

@@ -6,6 +6,9 @@
 tests/inputs/submissions/*
 !tests/inputs/submissions/.gitkeep
 
+# Private working folder: originals, mapping, form export (move outside the repo if you prefer)
+private/
+
 # ID-to-name mapping and anything that re-identifies a candidate
 *mapping*
 *.mapping.*

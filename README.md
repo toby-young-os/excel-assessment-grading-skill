@@ -13,7 +13,8 @@ A Claude skill that grades a candidate's completed Opensignal Excel exercise (Pa
 | `templates/` | The candidate exercise template, dated; older versions go in `templates/archive/` |
 | `tests/inputs/` | Anonymised submissions (`submissions/`, git-ignored) and reviewer verdicts |
 | `tests/outputs/` | Skill reports per submission, for comparing with reviewer verdicts |
-| `tests/scripts/` | `survey_xlsx.py` (where personal data sits; counts only) and `anonymise_xlsx.py` (replace and verify) |
+| `tests/scripts/` | `survey_xlsx.py` (where personal data sits; counts only), `anonymise_xlsx.py` (replace and verify), `select_test_set.py` (pick the test set from the form export) and `build_test_set.py` (anonymise the picks and write `verdicts.csv`) |
+| `private/` | Git-ignored: originals, the ID-to-candidate manifest, the form export. Never commit; move outside the repo if you prefer |
 | `notes/` | Review, knowledge inventory, open questions, template defects, test-set plan; `notes/archive/` holds the Slack extracts |
 
 ## Confidential source files (not in the repo)
@@ -49,3 +50,12 @@ python3 -I tests/scripts/anonymise_xlsx.py IN.xlsx tests/inputs/submissions --id
 ```
 
 Run both on a copy that sits outside the repo. Each run should end with `RESULT: PASS`.
+
+## Rebuilding the test set
+
+The current test set is 19 submissions (`sub-101` to `sub-120`, with no `sub-104`, which was excluded as an outlier); see `notes/test-set-plan.md` §2a. Reviewers are coded (`reviewer-NN`) and gendered pronouns in comments are replaced with "the candidate"; the lookups stay in `private/`. To rebuild the anonymised files from the private originals:
+
+```bash
+python3 -I tests/scripts/build_test_set.py private/manifest.tsv private/form-responses-2026-11-26.xlsx \
+    private/originals templates/exercise-template-2026-08-24.xlsx tests/inputs/submissions tests/inputs/verdicts.csv
+```

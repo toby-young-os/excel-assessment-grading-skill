@@ -53,8 +53,13 @@ def main():
     ap.add_argument("--template", default="", help="blank template .xlsx; its author is staff and is excluded")
     a = ap.parse_args()
     staff = set()
+    tpl_vals = set()
     if a.template:
-        tc = zipfile.ZipFile(a.template).read("docProps/core.xml")
+        tz = zipfile.ZipFile(a.template)
+        for n in tz.namelist():
+            if n.endswith(".xml"):
+                tpl_vals |= set(re.findall(rb"<(?:a:|c:|)t(?:\s[^>]*)?>([^<]*)</(?:a:|c:|)t>", tz.read(n)))
+        tc = tz.read("docProps/core.xml")
         for tag in ("creator", "lastModifiedBy"):
             staff |= {t.decode("utf-8", "ignore").lower() for t in re.split(rb"[\s._@-]+", xml_field(tc, tag)) if len(t) >= 3}
 
@@ -131,14 +136,20 @@ def main():
         b = z.read(n)
         h_name = sum(len(p.findall(b)) for p in whole)
         h_part = sum(len(p.findall(b)) for p in sub) - h_name
+        # Hits inside values that are template text/data (e.g. a place name) are not candidate data.
+        if tpl_vals and h_name:
+            vals = re.findall(rb"<(?:a:|c:|)t(?:\s[^>]*)?>([^<]*)</(?:a:|c:|)t>", b) + re.findall(rb'<s v="([^"]*)"', b)
+            h_tpl = sum(len(p.findall(v)) for v in vals if v in tpl_vals for p in whole)
+            h_name -= h_tpl
+            total.update(in_template=h_tpl)
         h_mail = len(EMAIL.findall(b))
         h_path = len(WIN_PATH.findall(b)) + len(MAC_PATH.findall(b))
         h_od = len(ONEDRIVE.findall(b))
         if h_name or h_part or h_mail or h_path or h_od:
             print(f"   {n}: names={h_name} partial={h_part} emails={h_mail} paths={h_path} cloud={h_od}")
         total.update(names_=h_name, partial=h_part, emails=h_mail, paths=h_path, cloud=h_od)
-    print(f"   TOTAL: names={total['names_']} partial={total['partial']} emails={total['emails']} "
-          f"paths={total['paths']} cloud={total['cloud']}")
+    print(f"   TOTAL: names={total['names_']} (+{total['in_template']} inside template text/data) "
+          f"partial={total['partial']} emails={total['emails']} paths={total['paths']} cloud={total['cloud']}")
     pats = whole
 
     # --- 5. Specific known locations
