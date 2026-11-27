@@ -253,7 +253,11 @@ def main():
     if residual_word:
         for n in zv.namelist():
             if n.endswith(".xml"):
-                for t in re.findall(rb"<(?:a:|c:|)t(?:\s[^>]*)?>([^<]*)</(?:a:|c:|)t>", zv.read(n)):
+                b = zv.read(n)
+                # Text nodes, plus pivot-cache item values (<s v="...">), that are template data
+                # (e.g. a place name containing a candidate's first name) are not candidate data.
+                vals = re.findall(rb"<(?:a:|c:|)t(?:\s[^>]*)?>([^<]*)</(?:a:|c:|)t>", b) + re.findall(rb'<s v="([^"]*)"', b)
+                for t in vals:
                     if t in tpl_text:
                         tpl_hits += sum(len(p.findall(t)) for p in token_pats + phrase_pats)
     unexpected = [n for n in changed if PROTECTED.match(n) and not any(log[n].values())]

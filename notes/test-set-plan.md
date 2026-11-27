@@ -73,6 +73,88 @@ The data is unbalanced, so sampling in proportion would give mostly near-perfect
 
 ---
 
+## 2a. Test set as built (26 Nov 2026)
+
+Toby decided on **exactly 20** submissions. The confirmed AI-use cases and Jeremy's three hand-graded assessments will be added later, after consulting Jeremy and Joni. "High score but No" was raised to 3 as the best stand-in for AI-suspected cases until then.
+
+**Amended to 19 (Toby, 26 Nov):** the one "low score but Yes" submission was removed as an outlier, and the group was dropped. The reviewer's note shows the scores were entered wrongly: the reviewer meant 3s, not 1s. The other two "low score but Yes" reviews in the form are likely data-entry errors too, so the pattern isn't treated as a genuine judgement. The exclusion is recorded in `private/excluded.tsv`. `select_test_set.py` is unchanged, so the original selection still reproduces.
+
+| Group | Count | Held back |
+|---|---|---|
+| fail (total < 12, No) | 4 | 1 |
+| border_yes (12–14.5, Yes) | 3 | 1 |
+| border_no (12–14.5, No) | 3 | 1 |
+| strong (15–16.5, Yes) | 3 | 1 |
+| top (17–18, Yes) | 3 | 1 |
+| high_no (≥ 15, No) | 3 | 1 |
+| **Total** | **19** (9 Yes / 10 No) | **6** |
+
+**Files:**
+
+- **Verdicts (committed):** `tests/inputs/verdicts.csv`, one row per submission:
+  - ID, group, whether it's held back, review month, reviewer
+  - source and detected route, with pivot and chart counts
+  - the six scores, the total and the recommendation
+  - the reviewer comments, anonymised
+- **Submissions (git-ignored):** `tests/inputs/submissions/sub-101.xlsx` to `sub-120.xlsx`, with no `sub-104` (excluded). IDs were assigned in shuffled order, so an ID doesn't reveal the group.
+- **Private (git-ignored `private/`):** the manifest (ID ↔ form row ↔ candidate), `excluded.tsv`, `reviewers.tsv` (reviewer code ↔ name), the originals, the form export and the selection.
+
+**How the verdict comments are anonymised (added 26 Nov):**
+
+- **Reviewers** are coded `reviewer-01` to `reviewer-11`, assigned in submission-ID order. The lookup is kept stable across rebuilds in `private/reviewers.tsv`.
+- **Staff names in comments** become the reviewer's code, or `[STAFF]` for coordinators.
+- **Gendered pronouns** become "the candidate" forms:
+  - he / she / him → "the candidate"
+  - his / hers → "the candidate's"
+  - himself / herself → "themselves"
+  - "her" → possessive or object, decided by the next word, with unclear cases flagged
+- **Titles** such as Mr/Ms followed by a name become `[CANDIDATE]`.
+- **A scan for other identifying details** (universities, employers, emails, phone numbers, URLs) found none.
+
+**Scripts:** `tests/scripts/select_test_set.py` picks the 20, and `build_test_set.py` anonymises them and writes the verdicts. Selection is reproducible (seed 26):
+
+- half-point totals fall into the band below;
+- the scarcest groups are filled first;
+- at most 2 per reviewer;
+- reviews on or after 24 Aug 2026 are preferred (16 of the original 20 picks).
+
+**How each file arrived (detected from markers in the file):**
+
+| Route | Count |
+|---|---|
+| Native Excel | 11 |
+| Excel via Google, charts saved as pictures | 4 |
+| Google Sheets export | 4 |
+
+All three routes from §4 are covered.
+
+**Replacements made during the build** (each kept the group and the reviewer cap):
+
+| Original pick | Problem | Replaced with |
+|---|---|---|
+| A top pick | Shared only as a OneDrive link, which can't be downloaded | The next top backup |
+| A borderline Yes and a borderline No | Over Google's 10 MB connector download limit, and the Slack entry was a Drive preview | A pick from the same group. The borderline No pick took over the held-back flag |
+| A strong pick | The Drive file no longer exists | A pick from the same group |
+
+**Lessons from the build:**
+
+- **Many Slack "files" are Google Drive previews, not uploads.** Their content can't be downloaded from Slack, so the Drive link in the same message is the real source.
+- **Some candidates submitted twice**, months apart. The form row's date decides which submission matches.
+- **Name spellings differ** between the form and the filename (e.g. a surname with one letter changed, or a full first name instead of a short one). All variants are passed to the anonymiser.
+- **Short first names and common surnames appear inside place names in the data**, e.g. a three-letter first name inside a city name. They're never altered, and both scripts now report these hits separately as "inside template text/data" instead of as names.
+
+**Verification (all 19, rerun after removing sub-104):**
+
+- the anonymiser reports `RESULT: PASS`;
+- an independent re-survey finds 0 name hits outside template data;
+- every grading part (worksheets, charts, pivots, pivot records, tables, text boxes) is byte-identical to the original;
+- path usernames and OneDrive user segments are replaced by the ID;
+- no surname appears hidden inside a longer word;
+- OCR found no names or emails in any image;
+- `verdicts.csv` contains 0 candidate-name hits, 0 reviewer names and 0 gendered pronouns.
+
+---
+
 ## 3. Anonymisation procedure
 
 **Scripts** (in `tests/scripts/`):
